@@ -4,11 +4,18 @@ Maven 플러그인으로 지정된 디렉토리에 있는 patch 파일들을 읽
 
 ## 기능
 
+### patch goal
 - 지정된 디렉토리에서 patch 파일 자동 검색
 - JGit을 사용한 `git apply` 방식으로 패치 적용
 - Git 저장소가 없는 경우 임시 저장소 자동 생성
 - 재귀적 디렉토리 탐색 지원
 - 여러 patch 파일 확장자 지원 (.patch, .diff 등)
+
+### replace goal
+- 지정된 디렉토리의 Java 파일을 읽어 package와 class 이름 추출
+- package 경로와 class 이름으로 소스 파일 자동 검색
+- src/main/java와 src/test/java에서 일치하는 파일 자동 교체
+- 재귀적 디렉토리 탐색 지원
 
 ## 사용 방법
 
@@ -27,6 +34,8 @@ Maven 플러그인으로 지정된 디렉토리에 있는 patch 파일들을 읽
 ```
 
 ### 설정 옵션
+
+#### patch goal 설정
 
 ```xml
 <plugin>
@@ -49,7 +58,32 @@ Maven 플러그인으로 지정된 디렉토리에 있는 patch 파일들을 읽
 </plugin>
 ```
 
+#### replace goal 설정
+
+```xml
+<plugin>
+    <groupId>com.github.h2seo</groupId>
+    <artifactId>rewrite-post-maven-plugin</artifactId>
+    <version>1.0.0</version>
+    <configuration>
+        <!-- 교체할 Java 파일이 있는 디렉토리 (기본값: ${project.basedir}/replace) -->
+        <sourceDirectory>${project.basedir}/replace</sourceDirectory>
+        
+        <!-- 메인 소스 디렉토리 (기본값: ${project.basedir}/src/main/java) -->
+        <mainSourceDirectory>${project.basedir}/src/main/java</mainSourceDirectory>
+        
+        <!-- 테스트 소스 디렉토리 (기본값: ${project.basedir}/src/test/java) -->
+        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+        
+        <!-- 오류 발생 시 실패 처리 (기본값: true) -->
+        <failOnError>true</failOnError>
+    </configuration>
+</plugin>
+```
+
 ### 명령줄에서 실행
+
+#### patch goal
 
 ```bash
 mvn rewrite-post:patch
@@ -69,6 +103,25 @@ mvn rewrite-post:patch \
     -Drewrite-post.patchDirectory=./patches \
     -Drewrite-post.gitRootDirectory=${project.basedir} \
     -Drewrite-post.extensions=patch,diff,patchfile
+```
+
+#### replace goal
+
+```bash
+mvn rewrite-post:replace
+```
+
+또는 설정 옵션과 함께:
+
+```bash
+# 커스텀 소스 디렉토리 지정
+mvn rewrite-post:replace -Drewrite-post.sourceDirectory=./my-replace
+
+# 메인/테스트 소스 디렉토리 지정
+mvn rewrite-post:replace \
+    -Drewrite-post.sourceDirectory=./replace \
+    -Drewrite-post.mainSourceDirectory=./src/main/java \
+    -Drewrite-post.testSourceDirectory=./src/test/java
 ```
 
 ## 프로젝트 구조 예시
@@ -122,6 +175,29 @@ parent-project/
 └── main-project/                     # 메인 Git 저장소
     ├── .git/
     └── src/
+```
+
+### replace goal 사용 예시
+
+```
+my-project/
+├── pom.xml
+├── replace/                          # 교체할 Java 파일 디렉토리
+│   └── com/
+│       └── example/
+│           └── MyClass.java          # package com.example; class MyClass
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── com/
+│   │           └── example/
+│   │               └── MyClass.java  # 이 파일이 replace/의 내용으로 교체됨
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   └── MyClass.java  # 또는 이 파일이 교체됨
+└── README.md
 ```
 
 ## 요구사항

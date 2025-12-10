@@ -37,6 +37,11 @@
             <artifactId>org.eclipse.jgit</artifactId>
             <version>5.13.3.202401111512-r</version>
         </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.33</version>
+        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
