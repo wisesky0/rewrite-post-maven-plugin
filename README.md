@@ -25,7 +25,7 @@ Maven 플러그인으로 지정된 디렉토리에 있는 patch 파일들을 읽
 <build>
     <plugins>
         <plugin>
-            <groupId>com.github.h2seo</groupId>
+            <groupId>com.github.h2seo.plugins</groupId>
             <artifactId>rewrite-post-maven-plugin</artifactId>
             <version>1.0.0</version>
         </plugin>

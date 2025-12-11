@@ -1,4 +1,4 @@
-package com.github.h2seo.rewrite;
+package com.github.h2seo.plugins;
 
 import java.io.File;
 import java.io.FileInputStream;

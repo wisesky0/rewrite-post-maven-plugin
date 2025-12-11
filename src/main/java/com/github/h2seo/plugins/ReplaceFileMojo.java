@@ -1,11 +1,12 @@
-package com.github.h2seo.rewrite;
+package com.github.h2seo.plugins;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -392,7 +393,7 @@ public class ReplaceFileMojo extends AbstractMojo {
         String className = null;
 
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(javaFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(javaFile), StandardCharsets.UTF_8))) {
             String line;
             boolean foundPackage = false;
             boolean foundClass = false;
@@ -489,8 +490,8 @@ public class ReplaceFileMojo extends AbstractMojo {
 
         // 파일 내용 복사
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(sourceFile, StandardCharsets.UTF_8));
-             FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+                new InputStreamReader(new FileInputStream(sourceFile), StandardCharsets.UTF_8));
+             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             
             char[] buffer = new char[8192];
             int length;

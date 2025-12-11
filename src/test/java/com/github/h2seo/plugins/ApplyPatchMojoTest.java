@@ -1,4 +1,4 @@
-package com.github.h2seo.rewrite;
+package com.github.h2seo.plugins;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

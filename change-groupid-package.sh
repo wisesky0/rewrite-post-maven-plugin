@@ -28,7 +28,7 @@ NC='\033[0m' # No Color
 
 # 현재 값
 OLD_GROUP_ID="com.github.h2seo"
-OLD_PACKAGE="com.github.h2seo.rewrite"
+OLD_PACKAGE="com.github.h2seo.plugins"
 OLD_PACKAGE_DIR="com/github/h2seo/rewrite"
 
 # 입력 검증

@@ -1,4 +1,4 @@
-package com.github.h2seo.rewrite;
+package com.github.h2seo.plugins;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,9 +8,11 @@ import static org.mockito.Mockito.verify;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -250,7 +252,7 @@ class ReplaceFileMojoTest {
     public void testExtractFileInfo() throws Exception {
         // Given: 유효한 package와 class 선언을 가진 Java 파일 생성
         File javaFile = new File(sourceDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javaFile), StandardCharsets.UTF_8)) {
             writer.write("package com.example.test;\n");
             writer.write("\n");
             writer.write("public class TestClass {\n");
@@ -297,7 +299,7 @@ class ReplaceFileMojoTest {
     public void testExtractFileInfoWithoutPackage() throws Exception {
         // Given: package 선언이 없는 Java 파일 생성
         File javaFile = new File(sourceDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javaFile), StandardCharsets.UTF_8)) {
             writer.write("public class TestClass {\n");
             writer.write("}\n");
         }
@@ -331,7 +333,7 @@ class ReplaceFileMojoTest {
     public void testExtractFileInfoWithoutClass() throws Exception {
         // Given: class 선언이 없는 Java 파일 생성
         File javaFile = new File(sourceDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javaFile), StandardCharsets.UTF_8)) {
             writer.write("package com.example.test;\n");
             writer.write("\n");
             writer.write("public interface TestInterface {\n");
@@ -506,7 +508,7 @@ class ReplaceFileMojoTest {
         // Given: 소스 디렉토리에 교체할 Java 파일 생성
         File sourceJavaFile = new File(sourceDir, "TestClass.java");
         String newContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Replaced!\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(sourceJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceJavaFile), StandardCharsets.UTF_8)) {
             writer.write(newContent);
         }
 
@@ -515,7 +517,7 @@ class ReplaceFileMojoTest {
         targetPackageDir.mkdirs();
         File targetFile = new File(targetPackageDir, "TestClass.java");
         String originalContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Original\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             writer.write(originalContent);
         }
 
@@ -524,7 +526,7 @@ class ReplaceFileMojoTest {
 
         // Then: 파일이 올바르게 교체되었는지 검증
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(targetFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(targetFile), StandardCharsets.UTF_8))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -562,7 +564,7 @@ class ReplaceFileMojoTest {
         // Given: 소스 디렉토리에 교체할 Java 파일 생성
         File sourceJavaFile = new File(sourceDir, "TestClass.java");
         String newContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Replaced in test!\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(sourceJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceJavaFile), StandardCharsets.UTF_8)) {
             writer.write(newContent);
         }
 
@@ -571,7 +573,7 @@ class ReplaceFileMojoTest {
         targetPackageDir.mkdirs();
         File targetFile = new File(targetPackageDir, "TestClass.java");
         String originalContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Original\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             writer.write(originalContent);
         }
 
@@ -580,7 +582,7 @@ class ReplaceFileMojoTest {
 
         // Then: 파일이 올바르게 교체되었는지 검증
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(targetFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(targetFile), StandardCharsets.UTF_8))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -615,7 +617,7 @@ class ReplaceFileMojoTest {
     public void testExecuteWithNoTargetFile() throws Exception {
         // Given: 소스 디렉토리에 교체할 Java 파일 생성
         File sourceJavaFile = new File(sourceDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(sourceJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceJavaFile), StandardCharsets.UTF_8)) {
             writer.write("package com.example.test;\n\npublic class TestClass {\n}\n");
         }
 
@@ -661,7 +663,7 @@ class ReplaceFileMojoTest {
 
         // 소스 디렉토리에 교체할 Java 파일 생성 (대상 파일은 없음)
         File sourceJavaFile = new File(sourceDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(sourceJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceJavaFile), StandardCharsets.UTF_8)) {
             writer.write("package com.example.test;\n\npublic class TestClass {\n}\n");
         }
 
@@ -701,7 +703,7 @@ class ReplaceFileMojoTest {
     public void testNonJavaFileWithPathMap() throws IOException, MojoExecutionException, MojoFailureException, Exception {
         // Given: path-map.yml 파일 생성
         File pathMapFile = new File(tempDir, "path-map.yml");
-        try (FileWriter writer = new FileWriter(pathMapFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(pathMapFile), StandardCharsets.UTF_8)) {
             writer.write("config.properties:\n");
             writer.write("  source: src/main/resources/config.properties\n");
             writer.write("  target: target/classes/config.properties\n");
@@ -711,7 +713,7 @@ class ReplaceFileMojoTest {
         // 소스 디렉토리에 Java 파일이 아닌 파일 생성
         File sourceFile = new File(sourceDir, "config.properties");
         String newContent = "new.property=value\n";
-        try (FileWriter writer = new FileWriter(sourceFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceFile), StandardCharsets.UTF_8)) {
             writer.write(newContent);
         }
 
@@ -720,7 +722,7 @@ class ReplaceFileMojoTest {
         targetDir.mkdirs();
         File targetFile = new File(targetDir, "config.properties");
         String originalContent = "old.property=oldvalue\n";
-        try (FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             writer.write(originalContent);
         }
 
@@ -729,7 +731,7 @@ class ReplaceFileMojoTest {
 
         // Then: 파일이 올바르게 교체되었는지 검증
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(targetFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(targetFile), StandardCharsets.UTF_8))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -771,7 +773,7 @@ class ReplaceFileMojoTest {
         // 소스 디렉토리에 Java 파일 생성
         File sourceJavaFile = new File(sourceDir, "TestClass.java");
         String newContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Replaced!\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(sourceJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceJavaFile), StandardCharsets.UTF_8)) {
             writer.write(newContent);
         }
 
@@ -780,13 +782,13 @@ class ReplaceFileMojoTest {
         targetPackageDir.mkdirs();
         File targetFile = new File(targetPackageDir, "TestClass.java");
         String originalContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Original\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             writer.write(originalContent);
         }
 
         // Java 파일이 아닌 파일 생성
         File nonJavaFile = new File(sourceDir, "config.properties");
-        try (FileWriter writer = new FileWriter(nonJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(nonJavaFile), StandardCharsets.UTF_8)) {
             writer.write("property=value\n");
         }
 
@@ -795,7 +797,7 @@ class ReplaceFileMojoTest {
 
         // Then: Java 파일만 교체되었는지 검증
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(targetFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(targetFile), StandardCharsets.UTF_8))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -839,7 +841,7 @@ class ReplaceFileMojoTest {
         // 소스 디렉토리에 Java 파일 생성
         File sourceJavaFile = new File(sourceDir, "TestClass.java");
         String newContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Replaced!\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(sourceJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(sourceJavaFile), StandardCharsets.UTF_8)) {
             writer.write(newContent);
         }
 
@@ -848,13 +850,13 @@ class ReplaceFileMojoTest {
         targetPackageDir.mkdirs();
         File targetFile = new File(targetPackageDir, "TestClass.java");
         String originalContent = "package com.example.test;\n\npublic class TestClass {\n    public void test() {\n        System.out.println(\"Original\");\n    }\n}\n";
-        try (FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             writer.write(originalContent);
         }
 
         // Java 파일이 아닌 파일 생성
         File nonJavaFile = new File(sourceDir, "config.properties");
-        try (FileWriter writer = new FileWriter(nonJavaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(nonJavaFile), StandardCharsets.UTF_8)) {
             writer.write("property=value\n");
         }
 
@@ -866,7 +868,7 @@ class ReplaceFileMojoTest {
         
         // Java 파일이 교체되었는지 확인
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(targetFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(targetFile), StandardCharsets.UTF_8))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -904,7 +906,7 @@ class ReplaceFileMojoTest {
     public void testPathMapExcludedFromSourceDirectory() throws IOException, MojoExecutionException, MojoFailureException, Exception {
         // Given: sourceDirectory 내에 path-map.yml 파일 생성
         File pathMapFile = new File(sourceDir, "path-map.yml");
-        try (FileWriter writer = new FileWriter(pathMapFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(pathMapFile), StandardCharsets.UTF_8)) {
             writer.write("config.properties:\n");
             writer.write("  source: src/main/resources/config.properties\n");
             writer.write("  target: target/classes/config.properties\n");
@@ -913,7 +915,7 @@ class ReplaceFileMojoTest {
 
         // 소스 디렉토리에 다른 파일 생성
         File javaFile = new File(sourceDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javaFile), StandardCharsets.UTF_8)) {
             writer.write("package com.example.test;\n\npublic class TestClass {\n}\n");
         }
 
@@ -921,7 +923,7 @@ class ReplaceFileMojoTest {
         File targetPackageDir = new File(mainSourceDir, "com/example/test");
         targetPackageDir.mkdirs();
         File targetFile = new File(targetPackageDir, "TestClass.java");
-        try (FileWriter writer = new FileWriter(targetFile, StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             writer.write("package com.example.test;\n\npublic class TestClass {\n    public void old() {}\n}\n");
         }
 
@@ -934,7 +936,7 @@ class ReplaceFileMojoTest {
         
         // Java 파일이 교체되었는지 확인
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(targetFile, StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(targetFile), StandardCharsets.UTF_8))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
